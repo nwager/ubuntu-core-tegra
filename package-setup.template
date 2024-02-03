@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# run as run in lxc container
+
+set -ex
+
+apt -yqq install software-properties-common rsync
+
+add-apt-repository -y ppa:snappy-dev/image
+
+if [[ ! "$(uname -m)" =~ arm64|aarch64 ]]; then
+	cat > /etc/apt/sources.list.d/arm64-sources.list <<EOF
+deb [arch=arm64] http://ports.ubuntu.com/ jammy main restricted
+deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates main restricted
+deb [arch=arm64] http://ports.ubuntu.com/ jammy universe
+deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates universe
+deb [arch=arm64] http://ports.ubuntu.com/ jammy multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ jammy-updates multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ jammy-backports main restricted universe multiverse
+EOF
+
+	dpkg --add-architecture arm64
+
+	sed -i -E 's/deb ([^\[])/deb [arch=amd64] \1/' /etc/apt/sources.list /etc/apt/sources.list.d/*
+	sed -i -E 's/deb-src ([^\[])/deb-src [arch=amd64] \1/' /etc/apt/sources.list /etc/apt/sources.list.d/*
+fi
+
+apt -qq update
+
+apt -yqq install ubuntu-core-initramfs
+
+snap install --classic snapcraft
+snap install --classic ubuntu-image

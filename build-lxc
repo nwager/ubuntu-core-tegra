@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -ex
+
+# -e means ephemeral: destroyed after stopping
+CONTAINER=$(lxc launch -e ubuntu:22.04 | grep -Po "(?<=Instance name is: ).*")
+
+lxc file push ./package-setup.template $CONTAINER/root/package-setup
+lxc file push ./build-img.template $CONTAINER/root/build-img
+lxc file push ./core.modules ./model.model $CONTAINER/root/
+
+lxc exec $CONTAINER -- bash package-setup
+lxc exec $CONTAINER -- bash build-img
+
+rm -rf build-artifacts
+mkdir build-artifacts
+lxc file pull $CONTAINER/root/ubuntu-core.img build-artifacts/ubuntu-core-$(date +"%Y-%m-%d-%s").img
+lxc file pull $CONTAINER/root/kernel.snap $CONTAINER/root/gadget.snap build-artifacts/
+
+lxc stop --force $CONTAINER

@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# run as root in lxc container
+
+# version of virtual package that installs kernel $KVER
+METAVER="5.15.0.1008.8"
+# version of the actual kernel
+KVER="5.15.0-1008-nvidia-tegra-igx"
+
+set -ex
+
+# install all the kernel packages
+apt install -yqq linux-nvidia-tegra-igx=$METAVER
+
+# add tegra modules to skeleton
+mkdir -p /usr/lib/ubuntu-core-initramfs/modules/tegra
+cp core.modules /usr/lib/ubuntu-core-initramfs/modules/tegra/extra-modules.conf
+
+# create initrd
+# since we're in a chroot and installed everything normally, we can use the default paths
+ubuntu-core-initramfs create-initrd --kernelver $KVER --feature main tegra --output initrd.img
+
+# create kernel.efi
+# figure out how to do signed stuff
+ubuntu-core-initramfs create-efi --unsigned --kernelver $KVER --initrd initrd.img --output kernel.efi
+
+# build kernel snap
+rm -rf kernel_snap
+mkdir -p kernel_snap
+# add snap.yaml
+mkdir -p kernel_snap/meta
+cat > kernel_snap/meta/snap.yaml <<EOF
+name: tegra-kernel
+version: $KVER
+summary: The Ubuntu Nvidia Tegra Linux kernel
+description: The Ubuntu Linux kernel for Nvidia Tegra/Jetson/IGX devices
+architectures:
+- arm64
+confinement: strict
+grade: stable
+type: kernel
+EOF
+# copy kernel package files here
+#rsync -a /boot/ kernel_snap/
+cp kernel.efi-$KVER kernel_snap/kernel.efi
+rsync -a /lib/firmware kernel_snap/
+rsync -a /lib/modules kernel_snap/
+snapcraft pack kernel_snap -o kernel.snap
+
+# build gadget snap
+rm -rf gadget_snap
+UBUNTU_STORE_ARCH=arm64 snap download pc --basename=gadget --channel=22/beta # do I need beta?
+unsquashfs -d gadget_snap gadget.snap
+echo "console=tty1 console=ttyTCU0,115200 console=ttyAMA0,115200" > gadget_snap/cmdline.extra
+snapcraft pack gadget_snap -o gadget.snap
+
+mkdir image
+ubuntu-image snap model.model --snap kernel.snap --snap gadget.snap -O image
+mv image/*.img ubuntu-core.img
