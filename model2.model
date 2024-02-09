@@ -1,0 +1,39 @@
+type: model
+authority-id: 4WCgH5JByGds5WSnSfkfqdtyM0UVYF0j
+revision: 2
+series: 16
+brand-id: 4WCgH5JByGds5WSnSfkfqdtyM0UVYF0j
+model: ubuntu-core-22-arm64
+architecture: arm64
+base: core22
+grade: dangerous
+snaps:
+  -
+    name: nvidia-tegra-igx-pc
+    type: gadget
+  -
+    name: nvidia-tegra-igx-kernel
+    type: kernel
+  -
+    default-channel: latest/stable
+    id: amcUKQILKXHHTlmSa7NMdnXSx02dNeeT
+    name: core22
+    type: base
+  -
+    default-channel: latest/stable
+    id: PMrrV4ml8uWuEUDBT8dSGnKUYbevVhc4
+    name: snapd
+    type: snapd
+timestamp: 2024-01-31T23:20:08+00:00
+sign-key-sha3-384: xWCPL3eIE3UF79ahuBfcUhle3G8PTTngOLUc4j5f7_BvWE5s1dtKOVqmOrgMABza
+
+AcLBcwQAAQoAHRYhBJvderM9D2cWdbtlwRNZvgh6bKUqBQJlxXdUAAoJEBNZvgh6bKUqzZAQAIGX
+DXECtPqD0Hxr/p/2fdv4hgNh6KwQvw9ittVO60Csu7ciGheae61zWWhcY2ssRQMbD76XxlQYcpHv
+Yni1zmnnVwv8nu1ye+4gif0IZv8H1+/oQR5hY+it6+8lai8RAF9PwfUS/eTG9Nc8xO62qhjNnsvS
+NpLo+uo1GJ32SjWxlNG77athc5M3DiKBUQh9bncuebgu0ydsIG+5F5RDLwY8KBdP2CVaIs1hVHkE
+SQACfKPphvU+Tx6FqAPEYdEeByeopO7WebtsFE6qR6kRXkqUviSu2FHZDDOXCUFcpcwvUvPylmym
+YB58IZ+RbEPesdgIjWkYvy5DVh5h6Taaa715AOFD1AEQfPTFkwpffWVqziWR5ephIKphZpS8eBZS
+bPk8D7Uqux/0gaxCYDTwktauPSC1Lv/BJXkPVlhHEXG3EBOq7842BV7OdgKqamrN7ynGJKegewZH
+mBiNtfm72P4RdQFCxFIB1qsWTd8IFyo0x0gnXPQIwWs/FhdTMCI7Zkg0nEhccQ7IDrBsMQ9EPCaz
+Oy070+81i2mM4jgvxFSM9TxfMbmwI0794HblBt/h3gD2ezONPENjCqGHwUfW7Vq/dgFkqqd85Erg
+IRxtYKY6N6Bc9zfpJ2r5NHlUUqWn3uTMflHIOpJLtEAiP1QztpoYc7c1oJTULDyNE44r1PdW

@@ -1,7 +1,11 @@
 #!/bin/bash
 set -ex
-# get usb that is not mounted as rootfs
-usb=$(ls /dev/sd* | grep 'sd[a-z]$' | grep -v $(lsblk | grep -P 'sd[a-z].*\s\/$' | grep -o 'sd[a-z]'))
+if [ $# -eq 1 ]; then
+	usb=$1
+else
+	# get usb that is not mounted as rootfs
+	usb=$(ls /dev/sd* | grep 'sd[a-z]$' | grep -v $(lsblk | grep -P 'sd[a-z].*\s\/$' | grep -o 'sd[a-z]'))
+fi
 sudo parted -s $usb mklabel gpt
-sudo dd if=$(find . -name "ubuntu-core*.img" | head -1) of=$usb bs=32M status=progress conv=fsync
+sudo dd if=$(find build-artifacts -name "ubuntu-core*.img" | head -1) of=$usb bs=32M status=progress conv=fsync; sync
 
